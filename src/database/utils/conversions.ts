@@ -1,6 +1,3 @@
-import { Task } from '../../models/Task';
-import { Project } from '../../models/Project';
-
 export const convertBooleanToInt = (bool: boolean | number) => (bool ? 1 : 0);
 export const convertIntToBoolean = (num: boolean | number) => !!num;
 

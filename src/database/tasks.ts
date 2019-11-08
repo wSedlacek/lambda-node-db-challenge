@@ -57,7 +57,7 @@ export const remove = async (id: string | number) => {
 };
 
 const appendProject = async (task: Task) => {
-  const project = await findProject(task.project_id);
+  const project = await findProject(task.project_id, false);
   const appended = { ...task };
   delete appended.project_id;
   return { ...appended, project };

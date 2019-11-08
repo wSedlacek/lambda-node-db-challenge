@@ -16,13 +16,13 @@ export const find = async () => {
   return converted;
 };
 
-export const findById = async (id: string | number) => {
+export const findById = async (id: string | number, append = true) => {
   const [project] = await db<Project>('projects').where({ id });
   if (!project) throw new Error('404');
   const converted = convertCompletedIntToBoolean<Project>(project);
   const withTasks = await appendTask(converted);
   const withResources = await appendResources(converted);
-  return { ...withTasks, ...withResources };
+  return append ? { ...withTasks, ...withResources } : converted;
 };
 
 export const insert = async (body: Project) => {

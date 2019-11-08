@@ -1,5 +1,3 @@
-import { Project } from '../models/Project';
-import { ProjectResource } from '../models/ProjectResource';
 import { Task } from '../models/Task';
 
 import { db } from '../../knexfile';
@@ -21,6 +19,13 @@ export const findById = async (id: string | number) => {
   const [task] = await db<Task>('tasks').where({ id });
   if (!task) throw new Error('404');
   const converted = convertCompletedIntToBoolean<Task>(task);
+  const withProject = await appendProject(converted);
+  return withProject;
+};
+
+export const findByProjectID = async (project_id: string | number) => {
+  const tasks = await db<Task>('tasks').where({ project_id });
+  const converted = convertArrIntToBoolean<Task>(tasks);
   return converted;
 };
 
@@ -51,8 +56,9 @@ export const remove = async (id: string | number) => {
   return task;
 };
 
-export const appendProject = async (task: Task) => {
+const appendProject = async (task: Task) => {
   const project = await findProject(task.project_id);
-  delete task.project_id;
-  return { ...task, project };
+  const appended = { ...task };
+  delete appended.project_id;
+  return { ...appended, project };
 };

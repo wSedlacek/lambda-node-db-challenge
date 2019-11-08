@@ -1,4 +1,5 @@
 import { Resource } from '../models/Resource';
+import { ProjectResource } from '../models/ProjectResource';
 
 import { db } from '../../knexfile';
 
@@ -11,6 +12,15 @@ export const findById = async (id: string | number) => {
   const [resource] = await db<Resource>('resources').where({ id });
   if (!resource) throw new Error('404');
   return resource;
+};
+
+export const findByProjectID = async (project_id: string | number) => {
+  const resources = await db<ProjectResource>('project-resources')
+    .select<Resource[]>('resources.*')
+    .from('project-resources')
+    .join('resources', { 'project-resources.resource_id': 'resources.id' })
+    .where({ project_id });
+  return resources;
 };
 
 export const insert = async (body: Resource) => {
